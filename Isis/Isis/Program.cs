@@ -11,7 +11,9 @@ namespace Isis
 	{
 		static void Main(string[] args)
 		{
-			var script = ReadScript();
+			string fileName = "script.txt";
+
+			var script = ReadScript(fileName);
 
 			foreach (var line in script)
 			{
@@ -19,10 +21,13 @@ namespace Isis
 			}
 		}
 
-		static IEnumerable<string> ReadScript()
+		/// <summary>
+		/// スクリプトファイルを読み込みます。
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		static IEnumerable<string> ReadScript(string fileName)
 		{
-			string fileName = "script.txt";
-
 			using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
 			using (var sr = new StreamReader(fs))
 			{
