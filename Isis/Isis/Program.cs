@@ -11,13 +11,24 @@ namespace Isis
 	{
 		static void Main(string[] args)
 		{
-			string fileName = "script.txt";
+			string scriptFilePath = "script.txt";
+			string scenarioFilePath = "scenario.txt";
 
-			var script = ReadScript(fileName);
+			var script = ReadScript(scriptFilePath);
 
 			foreach (var line in script)
 			{
 				Console.WriteLine(line);
+			}
+
+			Console.WriteLine();
+			//var cmd = new Command("default", @".+", @"\$");
+
+			var scenario = ReadScenario(scenarioFilePath);
+
+			foreach (var sc in scenario)
+			{
+				Console.WriteLine(sc);
 			}
 		}
 
@@ -36,6 +47,32 @@ namespace Isis
 					yield return sr.ReadLine();
 				}
 			}
+		}
+
+		static Queue<string> ReadScenario(string fileName)
+		{
+			var contents = File.ReadAllLines(fileName);
+			var result = new Queue<string>();
+			var tmp = "";
+			foreach (var line in contents)
+			{
+				if(line == "")
+				{
+					result.Enqueue(tmp);
+					tmp = "";
+				}
+				else
+				{
+					tmp += line + "\r\n" ;
+				}
+			}
+
+			if(tmp != "")
+			{
+				result.Enqueue(tmp);
+			}
+
+			return result;
 		}
 	}
 }
