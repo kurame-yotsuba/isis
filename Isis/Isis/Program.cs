@@ -15,6 +15,7 @@ namespace Isis
 			string scenarioFilePath = "scenario.txt";
 
 			var script = ReadContents(scriptFilePath);
+			var scenarioText = ReadContents(scenarioFilePath);
 
 			foreach (var line in script)
 			{
@@ -73,6 +74,25 @@ namespace Isis
 			}
 
 			return result;
+		}
+
+
+	}
+
+	class ScenarioElement
+	{
+		Command Command { get; }
+		string Text { get; }
+
+		public ScenarioElement(Command command, string text)
+		{
+			Command = command;
+			Text = text;
+		}
+
+		public override string ToString()
+		{
+			return $"{Command.Name}\t{Text}";
 		}
 	}
 }
