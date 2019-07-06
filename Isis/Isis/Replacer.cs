@@ -14,7 +14,7 @@ namespace Isis
 
 		public Replacer(string beginTag, string endTag)
 		{
-			(beginTag, endTag) = (Regex.Escape(beginTag), Regex.Escape(endTag));
+			(beginTag, endTag) = (beginTag.EscapeExceptOr(), endTag.EscapeExceptOr());
 			string tagPattern =$"{beginTag}(?<{tagName}>.+){endTag}";
 			extracter = new Regex(tagPattern, RegexOptions.Compiled);
 		}

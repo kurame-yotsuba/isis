@@ -8,8 +8,8 @@
 
   //スクリプトファイルのシナリオを挿入する部分を
   //あらわすタグです。
-  "BeginTag": "{",
-  "EndTag": "}",
+  "BeginTag": "{|｛",
+  "EndTag": "}|｝",
 
   "CommandPatterns": [
     {
@@ -20,7 +20,7 @@
     {
       "Name": "セリフ",
       "InputPattern": "",
-      "OutputPattern": "$"
+      "OutputPattern": "$|＄"
     }
   ]
 }
