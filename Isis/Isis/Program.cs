@@ -40,8 +40,7 @@ namespace Isis
 			}
 
 			Console.WriteLine("-------------------");
-			string tagName = "command";
-			var replacer = new Replacer(tagName, $"\\{{(?<{tagName}>.+)\\}}");
+			var replacer = new Replacer("{", "}");
 			foreach (var item in replacer.Replace(script, scenario, settings.Commands))
 			{
 				Console.WriteLine(item);

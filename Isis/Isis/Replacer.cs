@@ -9,13 +9,13 @@ namespace Isis
 {
 	class Replacer
 	{
-		readonly string tagName;
+		const string tagName = "command";
 		readonly Regex extracter;
 
-		public Replacer(string tagName, string tagPattern)
+		public Replacer(string beginTag, string endTag)
 		{
-			this.tagName = tagName;
-			this.extracter = new Regex(tagPattern, RegexOptions.Compiled);
+			string tagPattern = $"{beginTag}(?<{tagName}>.+){endTag}";
+			extracter = new Regex(tagPattern, RegexOptions.Compiled);
 		}
 
 		public IEnumerable<string> Replace(IEnumerable<string> script, Scenario scenario, Command[] commands)
