@@ -65,6 +65,9 @@
     <Compile Include="Command.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Replacer.cs" />
+    <Compile Include="Scenario.cs" />
+    <Compile Include="ScenarioElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

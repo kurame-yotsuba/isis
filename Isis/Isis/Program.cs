@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using KurameLibrary;
 
 namespace Isis
 {
@@ -13,6 +15,7 @@ namespace Isis
 		{
 			string scriptFilePath = "script.txt";
 			string scenarioFilePath = "scenario.txt";
+			string outputFilePath = "output.txt";
 
 			var script = ReadContents(scriptFilePath);
 			var scenarioText = ReadContents(scenarioFilePath);
@@ -23,14 +26,31 @@ namespace Isis
 			}
 
 			Console.WriteLine();
-			//var cmd = new Command("default", @".+", @"\$");
+			var commands = new[]{
+				new Command("monologlue", @"^[#＃](?<text>.*)", "#"),
+				new Command("serif", @"(?<text>.*)", @"$"),
+			};
 
-			var scenario = ReadScenario(scenarioFilePath);
+			var scenario = new Scenario(scenarioText, commands);
 
-			foreach (var sc in scenario)
+			foreach (var (key, queue) in scenario)
 			{
-				Console.WriteLine(sc);
+				foreach (var item in queue)
+				{
+					Console.WriteLine(item);
+				}
 			}
+
+			Console.WriteLine("-------------------");
+
+			foreach (var item in Replace(script, scenario, commands))
+			{
+				Console.WriteLine(item);
+			}
+
+			var output = Replace(script, scenario, commands);
+
+			WriteContents(outputFilePath, output);
 		}
 
 		/// <summary>
@@ -50,49 +70,27 @@ namespace Isis
 			}
 		}
 
-		static Queue<string> ReadScenario(string fileName)
+		static void WriteContents(string fileName, IEnumerable<string> contents)
 		{
-			var contents = File.ReadAllLines(fileName);
-			var result = new Queue<string>();
-			var tmp = "";
-			foreach (var line in contents)
+			using (var fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+			using (var sw = new StreamWriter(fs))
 			{
-				if(line == "")
+				foreach (var line in contents)
 				{
-					result.Enqueue(tmp);
-					tmp = "";
-				}
-				else
-				{
-					tmp += line + "\r\n" ;
+					sw.WriteLineAsync(line);
 				}
 			}
+		}
 
-			if(tmp != "")
+		static IEnumerable<string> Replace(IEnumerable<string> script, Scenario scenario, Command[] commands)
+		{
+			const string tagName = "command";
+			var extracter = new Regex($"\\{{(?<{tagName}>.+)\\}}");
+			foreach (var line in script)
 			{
-				result.Enqueue(tmp);
+				string output = extracter.Replace(line, m => scenario.Next(m.Groups[tagName].Value));
+				yield return output;
 			}
-
-			return result;
-		}
-
-
-	}
-
-	class ScenarioElement
-	{
-		Command Command { get; }
-		string Text { get; }
-
-		public ScenarioElement(Command command, string text)
-		{
-			Command = command;
-			Text = text;
-		}
-
-		public override string ToString()
-		{
-			return $"{Command.Name}\t{Text}";
 		}
 	}
 }
