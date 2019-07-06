@@ -14,7 +14,7 @@ namespace Isis
 			string scriptFilePath = "script.txt";
 			string scenarioFilePath = "scenario.txt";
 
-			var script = ReadScript(scriptFilePath);
+			var script = ReadContents(scriptFilePath);
 
 			foreach (var line in script)
 			{
@@ -33,11 +33,11 @@ namespace Isis
 		}
 
 		/// <summary>
-		/// スクリプトファイルを読み込みます。
+		/// コンテンツファイルを読み込みます。
 		/// </summary>
 		/// <param name="fileName"></param>
 		/// <returns></returns>
-		static IEnumerable<string> ReadScript(string fileName)
+		static IEnumerable<string> ReadContents(string fileName)
 		{
 			using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
 			using (var sr = new StreamReader(fs))
