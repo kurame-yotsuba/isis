@@ -1,15 +1,24 @@
 {
+  //設定ファイルです。
+  //「:」の左側は編集しないで下さい。
+
   "ScenarioFilePath": "scenario.txt",
   "ScriptFilePath": "script.txt",
   "OutputFilePath": "output.txt",
+
+  //スクリプトファイルのシナリオを挿入する部分を
+  //あらわすタグです。
+  "BeginTag": "{",
+  "EndTag": "}",
+
   "CommandPatterns": [
     {
-      "Name": "monologlue",
+      "Name": "モノローグ",
       "InputPattern": "[#＃]",
       "OutputPattern": "#"
     },
     {
-      "Name": "serif",
+      "Name": "セリフ",
       "InputPattern": "",
       "OutputPattern": "$"
     }

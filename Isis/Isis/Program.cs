@@ -40,7 +40,7 @@ namespace Isis
 			}
 
 			Console.WriteLine("-------------------");
-			var replacer = new Replacer("{", "}");
+			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
 			foreach (var item in replacer.Replace(script, scenario, settings.Commands))
 			{
 				Console.WriteLine(item);

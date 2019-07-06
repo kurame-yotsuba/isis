@@ -12,14 +12,19 @@ namespace Isis
 		public string ScenarioFilePath { get; } = "scenario.txt";
 		public string ScriptFilePath { get; } = "script.txt";
 		public string OutputFilePath { get; } = "output.txt";
+		public string BeginTag { get; } = "{";
+		public string EndTag { get; } = "}";
 		public Command[] Commands { get; }
 
 		public Settings(string scenarioFilePath, string scriptFilePath, string outputFilePath,
+			string beginTag, string endTag,
 			CommandPattern[] commandPatterns)
 		{
 			ScriptFilePath = scriptFilePath;
 			ScenarioFilePath = scenarioFilePath;
 			OutputFilePath = outputFilePath;
+			BeginTag = beginTag;
+			EndTag = endTag;
 			Commands = commandPatterns.Select(x => new Command(x.Name, x.InputPattern, x.OutputPattern)).ToArray();
 		}
 
@@ -30,6 +35,8 @@ namespace Isis
 				ScenarioFilePath,
 				ScriptFilePath,
 				OutputFilePath,
+				BeginTag,
+				EndTag,
 				CommandPatterns = Commands.Select(x => new
 				{
 					x.Name,
@@ -48,22 +55,22 @@ namespace Isis
 			return obj;
 		}
 
-		public static Settings Default
-		{
-			get
-			{
-				var commands = new[]
-				{
-					new CommandPattern { Name = "monologlue", InputPattern = @"^[#＃](?<text>.*)", OutputPattern = "#" },
-					new CommandPattern{ Name = "serif", InputPattern = @"(?<text>.*)", OutputPattern = @"$" },
-				};
+		//public static Settings Default
+		//{
+		//	get
+		//	{
+		//		var commands = new[]
+		//		{
+		//			new CommandPattern { Name = "monologlue", InputPattern = @"^[#＃](?<text>.*)", OutputPattern = "#" },
+		//			new CommandPattern{ Name = "serif", InputPattern = @"(?<text>.*)", OutputPattern = @"$" },
+		//		};
 
-				var result = new Settings(
-					"scenario.txt", "script.txt", "output.txt", commands);
+		//		var result = new Settings(
+		//			"scenario.txt", "script.txt", "output.txt", commands);
 
-				return result;
-			}
-		}
+		//		return result;
+		//	}
+		//}
 
 		public class CommandPattern
 		{
