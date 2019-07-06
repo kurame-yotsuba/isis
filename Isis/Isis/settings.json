@@ -5,12 +5,12 @@
   "CommandPatterns": [
     {
       "Name": "monologlue",
-      "InputPattern": "^[#＃](?<text>.*)",
+      "InputPattern": "[#＃]",
       "OutputPattern": "#"
     },
     {
       "Name": "serif",
-      "InputPattern": "(?<text>.*)",
+      "InputPattern": "",
       "OutputPattern": "$"
     }
   ]

@@ -30,7 +30,7 @@ namespace Isis
 		public Command(string name, string inputPattern, string outputPattern)
 		{
 			Name = name;
-			InputPattern = new Regex(inputPattern, RegexOptions.Compiled | RegexOptions.Singleline);
+			InputPattern = new Regex("^" + inputPattern + @"(?<text>.*)", RegexOptions.Compiled | RegexOptions.Singleline);
 			OutputPattern = new Regex(outputPattern, RegexOptions.Compiled | RegexOptions.Singleline);
 		}
 	}
