@@ -6,19 +6,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KurameLibrary;
+using Newtonsoft.Json;
 
 namespace Isis
 {
 	class Program
 	{
+		const string SettingsFilePath = "settings.json";
+
 		static void Main(string[] args)
 		{
-			string scriptFilePath = "script.txt";
-			string scenarioFilePath = "scenario.txt";
-			string outputFilePath = "output.txt";
+			var json = File.ReadAllText(SettingsFilePath);
+			var settings = Settings.Deserialize(json);
 
-			var script = ReadContents(scriptFilePath);
-			var scenarioText = ReadContents(scenarioFilePath);
+			var scenarioText = ReadContents(settings.ScenarioFilePath);
+			var script = ReadContents(settings.ScriptFilePath);
 
 			foreach (var line in script)
 			{
@@ -26,12 +28,8 @@ namespace Isis
 			}
 
 			Console.WriteLine();
-			var commands = new[]{
-				new Command("monologlue", @"^[#＃](?<text>.*)", "#"),
-				new Command("serif", @"(?<text>.*)", @"$"),
-			};
 
-			var scenario = new Scenario(scenarioText, commands);
+			var scenario = new Scenario(scenarioText, settings.Commands);
 
 			foreach (var (key, queue) in scenario)
 			{
@@ -44,14 +42,14 @@ namespace Isis
 			Console.WriteLine("-------------------");
 			string tagName = "command";
 			var replacer = new Replacer(tagName, $"\\{{(?<{tagName}>.+)\\}}");
-			foreach (var item in replacer.Replace(script, scenario, commands))
+			foreach (var item in replacer.Replace(script, scenario, settings.Commands))
 			{
 				Console.WriteLine(item);
 			}
 
-			var output = replacer.Replace(script, scenario, commands);
+			var output = replacer.Replace(script, scenario, settings.Commands);
 
-			WriteContents(outputFilePath, output);
+			WriteContents(settings.OutputFilePath, output);
 		}
 
 		/// <summary>

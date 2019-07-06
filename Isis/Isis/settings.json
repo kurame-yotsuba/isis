@@ -1,0 +1,17 @@
+{
+  "ScenarioFilePath": "scenario.txt",
+  "ScriptFilePath": "script.txt",
+  "OutputFilePath": "output.txt",
+  "CommandPatterns": [
+    {
+      "Name": "monologlue",
+      "InputPattern": "^[#＃](?<text>.*)",
+      "OutputPattern": "#"
+    },
+    {
+      "Name": "serif",
+      "InputPattern": "(?<text>.*)",
+      "OutputPattern": "$"
+    }
+  ]
+}
