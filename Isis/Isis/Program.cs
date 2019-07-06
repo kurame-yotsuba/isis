@@ -42,13 +42,14 @@ namespace Isis
 			}
 
 			Console.WriteLine("-------------------");
-
-			foreach (var item in Replace(script, scenario, commands))
+			string tagName = "command";
+			var replacer = new Replacer(tagName, $"\\{{(?<{tagName}>.+)\\}}");
+			foreach (var item in replacer.Replace(script, scenario, commands))
 			{
 				Console.WriteLine(item);
 			}
 
-			var output = Replace(script, scenario, commands);
+			var output = replacer.Replace(script, scenario, commands);
 
 			WriteContents(outputFilePath, output);
 		}
@@ -82,15 +83,6 @@ namespace Isis
 			}
 		}
 
-		static IEnumerable<string> Replace(IEnumerable<string> script, Scenario scenario, Command[] commands)
-		{
-			const string tagName = "command";
-			var extracter = new Regex($"\\{{(?<{tagName}>.+)\\}}");
-			foreach (var line in script)
-			{
-				string output = extracter.Replace(line, m => scenario.Next(m.Groups[tagName].Value));
-				yield return output;
-			}
-		}
+		
 	}
 }
