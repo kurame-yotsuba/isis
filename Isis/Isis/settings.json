@@ -14,8 +14,8 @@
   "CommandPatterns": [
     {
       "Name": "モノローグ",
-      "InputPattern": "[#＃]",
-      "OutputPattern": "#"
+      "InputPattern": "#|＃",
+      "OutputPattern": "#|＃"
     },
     {
       "Name": "セリフ",

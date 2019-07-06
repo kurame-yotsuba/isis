@@ -72,6 +72,7 @@
     <Compile Include="Scenario.cs" />
     <Compile Include="ScenarioElement.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -54,15 +54,16 @@ namespace Isis
 					foreach (var cmd in commands)
 					{
 						var m = cmd.InputPattern.Match(line);
-						var outputPat = cmd.OutputPattern.ToString();
+						//var outputPat = cmd.OutputPattern.ToString();
+						string key = cmd.Name;
 						if (m.Success)
 						{
-							if (!scenario.ContainsKey(outputPat))
+							if (!scenario.ContainsKey(key))
 							{
-								scenario[outputPat] = new List<ScenarioElement>();
-								indexes[outputPat] = 0;
+								scenario[key] = new List<ScenarioElement>();
+								indexes[key] = 0;
 							}
-							scenario[outputPat].Add(new ScenarioElement(cmd, m.Groups["text"].Value));
+							scenario[cmd.Name].Add(new ScenarioElement(cmd, m.Groups["text"].Value));
 							break;
 						}
 					}
