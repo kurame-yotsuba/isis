@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KurameLibrary;
 using Newtonsoft.Json;
+using static Isis.Utility;
 
 namespace Isis
 {
@@ -38,7 +39,7 @@ namespace Isis
 			}
 			catch (ArgumentOutOfRangeException)
 			{
-				Console.WriteLine("スクリプト内のシナリオタグの数がシナリオ数よりも多いです。");
+				ErrorPrint("スクリプト内のシナリオタグの数がシナリオ数よりも多いです。");
 				Exit(ExitCode.OverScenarioTag);
 			}
 
@@ -55,7 +56,7 @@ namespace Isis
 			}
 			catch(Settings.SettingsException e)
 			{
-				Console.WriteLine(e.Message);
+				ErrorPrint(e.Message);
 				Exit(ExitCode.WrongSettingFile);
 			}
 
@@ -119,19 +120,9 @@ namespace Isis
 		{
 			if (!File.Exists(filePath))
 			{
-				Console.WriteLine(filePath + "が見つかりません。");
+				ErrorPrint(filePath + "が見つかりません。");
 				Exit(ExitCode.NotFoundFile);
 			}
-		}
-
-		public static void Exit(ExitCode exitCode)
-		{
-			Console.WriteLine("\n処理を終了しました。");
-			Console.WriteLine("終了するには何かキーを押してください。");
-
-			Console.ReadKey(intercept: true);
-
-			Environment.Exit((int)exitCode);
 		}
 
 		#region ファイル読み込み、書き込み用

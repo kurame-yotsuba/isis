@@ -60,5 +60,37 @@ namespace Isis
 			//最後のoutputをここで返す。
 			if (output.Count > 0) yield return output;
 		}
+
+		/// <summary>
+		/// エラーメッセージの出力を行います。
+		/// </summary>
+		/// <param name="message"></param>
+		public static void ErrorPrint(string message)
+		{
+			Console.WriteLine("エラー：" + message);
+		}
+
+		/// <summary>
+		/// 警告のメッセージの出力を行います。
+		/// </summary>
+		/// <param name="message"></param>
+		public static void WarningPrint(string message)
+		{
+			Console.WriteLine("警告：" + message);
+		}
+
+		/// <summary>
+		/// 終了メッセージを出力してから終了します。
+		/// </summary>
+		/// <param name="exitCode"></param>
+		public static void Exit(ExitCode exitCode)
+		{
+			Console.WriteLine("\n処理を終了しました。");
+			Console.WriteLine("終了するには何かキーを押してください。");
+
+			Console.ReadKey(intercept: true);
+
+			Environment.Exit((int)exitCode);
+		}
 	}
 }
