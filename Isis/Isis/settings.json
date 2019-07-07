@@ -1,6 +1,8 @@
 {
   //設定ファイルです。
   //「:」の左側は編集しないで下さい。
+  //右側は自由に編集してOK
+  // スラッシュ2つ書いた行は無視されるので好きなこと書いてOK
 
   "ScenarioFilePath": "scenario.txt",
   "ScriptFilePath": "script.txt",
@@ -11,18 +13,21 @@
   "BeginTag": "{|｛",
   "EndTag": "}|｝",
 
-  //パターンを複数指定したい場合は「|」を間に置きます。
+  //ここのName, InputPattern, OutputPatternの組は増やしてもOK
   "CommandPatterns": [
     {
       "Name": "モノローグ",
+      //パターンを複数指定したい場合は「|」を間に置きます。
+      //＃とかの記号は好きに変えていい
       "InputPattern": "#|＃",
       "OutputPattern": "#|＃"
     },
     {
-      "Name": "コメント",
-      "InputPattern": "@|＠",
-      "OutputPattern": ""
+      "Name": "画像",
+      "InputPattern": "%|％",
+      "OutputPattern": "%|％"
     },
+    //これは一番下に置く。
     {
       "Name": "セリフ",
       "InputPattern": "",
