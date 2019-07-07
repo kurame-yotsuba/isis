@@ -31,13 +31,6 @@ namespace Isis
 			//置換を行うインスタンスの作成
 			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
 
-
-
-
-
-
-
-
 			try
 			{
 				var output = replacer.Replace(script, scenario, settings.Commands)
@@ -62,6 +55,9 @@ namespace Isis
 			Exit(ExitCode.Success);
 		}
 
+		/// <summary>
+		/// 変数の初期化を行います。
+		/// </summary>
 		static void Initialize()
 		{
 			//設定ファイルの読み込み
