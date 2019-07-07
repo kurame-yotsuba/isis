@@ -20,11 +20,7 @@ namespace Isis
 
 		static void Main(string[] args)
 		{
-			if (!File.Exists(SettingsFilePath))
-			{
-				Console.WriteLine(SettingsFilePath + "が見つかりません。");
-				return;
-			}
+			FileExistCheck(SettingsFilePath);
 
 			Initialize();
 
@@ -52,6 +48,15 @@ namespace Isis
 			{
 				Console.WriteLine(e.Message);
 				Environment.Exit(1);
+			}
+
+			FileExistCheck(settings.ScenarioFilePath);
+			FileExistCheck(settings.ScriptFilePath);
+			if (File.Exists(settings.OutputFilePath))
+			{
+				Console.WriteLine(settings.OutputFilePath + "は既に存在します。");
+				Console.WriteLine("上書きしますか？[Y/n]");
+				KurameUtility.InputYesNo(Console.ReadLine, Console.WriteLine, true);
 			}
 
 			//シナリオとスクリプトの読み込み
@@ -91,6 +96,15 @@ namespace Isis
 		}
 
 		#endregion
+
+		static void FileExistCheck(string filePath)
+		{
+			if (!File.Exists(filePath))
+			{
+				Console.WriteLine(filePath + "が見つかりません。");
+				Environment.Exit(2);
+			}
+		}
 
 		#region ファイル読み込み、書き込み用
 
