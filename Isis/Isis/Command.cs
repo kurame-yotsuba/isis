@@ -33,7 +33,7 @@ namespace Isis
 			//Regex用のオプション
 			var options = RegexOptions.Compiled | RegexOptions.Singleline;
 			InputPattern = new Regex("^" + inputPattern.EscapeExceptOr() + @"(?<text>.*)", options);
-			OutputPattern = new Regex(outputPattern.EscapeExceptOr(), options);
+			OutputPattern = new Regex("^" + outputPattern.EscapeExceptOr() + "$", options);
 		}
 	}
 }
