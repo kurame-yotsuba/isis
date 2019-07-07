@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Isis.Utility;
 
 namespace Isis
 {
@@ -63,6 +64,11 @@ namespace Isis
 						string output = extracter.Replace(line, m => scenario.Next(key));
 						yield return output;
 						break;
+					}
+					else
+					{
+						ErrorPrint("登録されていないタグが検出されました。");
+						Exit(ExitCode.UnknownTag);
 					}
 				}
 			}

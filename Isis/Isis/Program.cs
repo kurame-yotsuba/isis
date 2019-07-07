@@ -190,5 +190,6 @@ namespace Isis
 		WrongSettingFile,
 		DenyOverwritten,
 		OverScenarioTag,
+		UnknownTag,
 	}
 }
