@@ -18,7 +18,7 @@ namespace Isis
 		static IEnumerable<string> script;
 		static Scenario scenario;
 
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
 			FileExistCheck(SettingsFilePath);
 
@@ -40,6 +40,8 @@ namespace Isis
 			Console.WriteLine("終了するには何かキーを押してください。");
 
 			Console.ReadKey(intercept: true);
+
+			return (int)ExitCode.Success;
 		}
 
 		static void Initialize()
@@ -53,7 +55,7 @@ namespace Isis
 			catch(Settings.SettingsException e)
 			{
 				Console.WriteLine(e.Message);
-				Environment.Exit((int)ExitCode.WrongSettingFile);
+				Exit(ExitCode.WrongSettingFile);
 			}
 
 			FileExistCheck(settings.ScenarioFilePath);
@@ -66,8 +68,7 @@ namespace Isis
 				var overwritten = KurameUtility.InputYesNo(Console.ReadLine, Console.WriteLine, true);
 				if (!overwritten)
 				{
-					Console.WriteLine("プログラムを終了します。");
-					Environment.Exit((int)ExitCode.DenyOverwritten);
+					Exit(ExitCode.DenyOverwritten);
 				}
 			}
 
@@ -118,8 +119,18 @@ namespace Isis
 			if (!File.Exists(filePath))
 			{
 				Console.WriteLine(filePath + "が見つかりません。");
-				Environment.Exit((int)ExitCode.NotFoundFile);
+				Exit(ExitCode.NotFoundFile);
 			}
+		}
+
+		static void Exit(ExitCode exitCode)
+		{
+			Console.WriteLine("\n処理を終了しました。");
+			Console.WriteLine("終了するには何かキーを押してください。");
+
+			Console.ReadKey(intercept: true);
+
+			Environment.Exit((int)exitCode);
 		}
 
 		#region ファイル読み込み、書き込み用
@@ -161,8 +172,12 @@ namespace Isis
 		#endregion
 	}
 
+	/// <summary>
+	/// 終了コード
+	/// </summary>
 	enum ExitCode
 	{
+		Success,
 		NotFoundFile,
 		WrongSettingFile,
 		DenyOverwritten,
