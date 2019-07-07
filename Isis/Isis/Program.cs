@@ -14,18 +14,19 @@ namespace Isis
 	class Program
 	{
 		const string SettingsFilePath = "settings.json";
+		static Settings settings;
+		static IEnumerable<string> script;
+		static Scenario scenario;
 
 		static void Main(string[] args)
 		{
-			//設定ファイルの読み込み
-			var json = File.ReadAllText(SettingsFilePath);
-			var settings = Settings.Deserialize(json);
+			if (!File.Exists(SettingsFilePath))
+			{
+				Console.WriteLine(SettingsFilePath + "が見つかりません。");
+				return;
+			}
 
-			//シナリオとスクリプトの読み込み
-			var scenarioText = ReadContents(settings.ScenarioFilePath);
-			var script = ReadContents(settings.ScriptFilePath);
-
-			var scenario = new Scenario(scenarioText, settings.Commands);
+			Initialize();
 
 			//シナリオのコンソールへの出力
 			OutputScenario(scenario);
@@ -38,6 +39,29 @@ namespace Isis
 
 			WriteContents(settings.OutputFilePath, output);
 		}
+
+		static void Initialize()
+		{
+			//設定ファイルの読み込み
+			var json = File.ReadAllText(SettingsFilePath);
+			try
+			{
+				settings = Settings.Deserialize(json);
+			}
+			catch(Settings.SettingsException e)
+			{
+				Console.WriteLine(e.Message);
+				Environment.Exit(1);
+			}
+
+			//シナリオとスクリプトの読み込み
+			var scenarioText = ReadContents(settings.ScenarioFilePath);
+			scenario = new Scenario(scenarioText, settings.Commands);
+
+			script = ReadContents(settings.ScriptFilePath);
+		}
+
+		#region DEBUG用
 
 		[Conditional("DEBUG")]
 		static void OutputScenario(Scenario scenario)
@@ -65,6 +89,10 @@ namespace Isis
 				Console.WriteLine(item);
 			}
 		}
+
+		#endregion
+
+		#region ファイル読み込み、書き込み用
 
 		/// <summary>
 		/// コンテンツファイルを読み込みます。
@@ -99,5 +127,7 @@ namespace Isis
 				}
 			}
 		}
+
+		#endregion
 	}
 }

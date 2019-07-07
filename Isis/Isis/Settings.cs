@@ -19,6 +19,22 @@ namespace Isis
 			public string Name { get; set; }
 			public string InputPattern { get; set; }
 			public string OutputPattern { get; set; }
+
+			public CommandPattern(string name, string inputPattern, string outputPattern)
+			{
+				Name = name ?? throw new SettingsException(nameof(Name));
+				InputPattern = inputPattern ?? throw new SettingsException(nameof(InputPattern));
+				OutputPattern = outputPattern ?? throw new SettingsException(nameof(OutputPattern));
+			}
+		}
+
+		public class SettingsException : ArgumentNullException
+		{
+			public SettingsException(string paramName) : base(paramName)
+			{
+			}
+
+			public override string Message => $"{ParamName}が設定ファイルに見つかりません。";
 		}
 
 		#endregion
@@ -60,12 +76,13 @@ namespace Isis
 			string beginTag, string endTag,
 			CommandPattern[] commandPatterns)
 		{
-			ScriptFilePath = scriptFilePath;
-			ScenarioFilePath = scenarioFilePath;
-			OutputFilePath = outputFilePath;
-			BeginTag = beginTag;
-			EndTag = endTag;
+			ScriptFilePath = scriptFilePath ?? throw new SettingsException(nameof(ScriptFilePath));
+			ScenarioFilePath = scenarioFilePath ?? throw new SettingsException(nameof(ScenarioFilePath));
+			OutputFilePath = outputFilePath ?? throw new SettingsException(nameof(OutputFilePath));
+			BeginTag = beginTag ?? throw new SettingsException(nameof(BeginTag));
+			EndTag = endTag ?? throw new SettingsException(nameof(EndTag));
 
+			var cp = commandPatterns ?? throw new SettingsException(nameof(commandPatterns));
 			Commands = commandPatterns
 				.Select(x => new Command(x.Name, x.InputPattern, x.OutputPattern))
 				.ToArray();
@@ -86,11 +103,11 @@ namespace Isis
 				EndTag,
 				//JSON用の中間形式に変換
 				CommandPatterns = Commands.Select(x => new CommandPattern
-				{
-					Name = x.Name,
-					InputPattern = x.InputPattern.ToString(),
-					OutputPattern = x.OutputPattern.ToString(),
-				}),
+				(
+					x.Name,
+					x.InputPattern.ToString(),
+					x.OutputPattern.ToString()
+				)),
 			};
 			var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
 
