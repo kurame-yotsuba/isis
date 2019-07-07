@@ -34,6 +34,12 @@ namespace Isis
 			Output(output);
 
 			WriteContents(settings.OutputFilePath, output);
+
+
+			Console.WriteLine("\n処理を終了しました。");
+			Console.WriteLine("終了するには何かキーを押してください。");
+
+			Console.ReadKey(intercept: true);
 		}
 
 		static void Initialize()
@@ -47,16 +53,22 @@ namespace Isis
 			catch(Settings.SettingsException e)
 			{
 				Console.WriteLine(e.Message);
-				Environment.Exit(1);
+				Environment.Exit((int)ExitCode.WrongSettingFile);
 			}
 
 			FileExistCheck(settings.ScenarioFilePath);
 			FileExistCheck(settings.ScriptFilePath);
+
 			if (File.Exists(settings.OutputFilePath))
 			{
 				Console.WriteLine(settings.OutputFilePath + "は既に存在します。");
 				Console.WriteLine("上書きしますか？[Y/n]");
-				KurameUtility.InputYesNo(Console.ReadLine, Console.WriteLine, true);
+				var overwritten = KurameUtility.InputYesNo(Console.ReadLine, Console.WriteLine, true);
+				if (!overwritten)
+				{
+					Console.WriteLine("プログラムを終了します。");
+					Environment.Exit((int)ExitCode.DenyOverwritten);
+				}
 			}
 
 			//シナリオとスクリプトの読み込み
@@ -97,12 +109,16 @@ namespace Isis
 
 		#endregion
 
+		/// <summary>
+		/// ファイルの存在チェックを行います。
+		/// </summary>
+		/// <param name="filePath"></param>
 		static void FileExistCheck(string filePath)
 		{
 			if (!File.Exists(filePath))
 			{
 				Console.WriteLine(filePath + "が見つかりません。");
-				Environment.Exit(2);
+				Environment.Exit((int)ExitCode.NotFoundFile);
 			}
 		}
 
@@ -143,5 +159,12 @@ namespace Isis
 		}
 
 		#endregion
+	}
+
+	enum ExitCode
+	{
+		NotFoundFile,
+		WrongSettingFile,
+		DenyOverwritten,
 	}
 }
