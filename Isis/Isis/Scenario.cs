@@ -28,16 +28,16 @@ namespace Isis
 			{
 				foreach (var cmd in commands)
 				{
-					var m = cmd.InputPattern.Match(line);
+					var match = cmd.InputPattern.Match(line);
 					string key = cmd.Name;
-					if (m.Success)
+					if (match.Success)
 					{
 						if (!scenario.ContainsKey(key))
 						{
 							scenario[key] = new List<ScenarioElement>();
 							indexes[key] = 0;
 						}
-						scenario[cmd.Name].Add(new ScenarioElement(cmd, m.Groups["text"].Value));
+						scenario[cmd.Name].Add(new ScenarioElement(cmd, match.Groups["text"].Value));
 						break;
 					}
 				}
