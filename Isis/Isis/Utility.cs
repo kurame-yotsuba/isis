@@ -67,7 +67,9 @@ namespace Isis
 		/// <param name="message"></param>
 		public static void ErrorPrint(string message)
 		{
+			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("エラー：" + message);
+			Console.ResetColor();
 		}
 
 		/// <summary>
@@ -76,7 +78,9 @@ namespace Isis
 		/// <param name="message"></param>
 		public static void WarningPrint(string message)
 		{
+			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine("警告：" + message);
+			Console.ResetColor();
 		}
 
 		/// <summary>
