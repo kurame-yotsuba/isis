@@ -30,9 +30,25 @@ namespace Isis
 
 			//置換を行うインスタンスの作成
 			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
+
+
+
+
+
+
+
+
 			try
 			{
-				var output = replacer.Replace(script, scenario, settings.Commands);
+				var output = replacer.Replace(script, scenario, settings.Commands)
+					.ToArray();
+
+				var remainCount = scenario.RemainCount;
+				if (remainCount > 0)
+				{
+					WarningPrint("シナリオファイル内の" + remainCount.ToString() + "個の要素が使われていません。");
+				}
+
 				Output(output);
 
 				WriteContents(settings.OutputFilePath, output);

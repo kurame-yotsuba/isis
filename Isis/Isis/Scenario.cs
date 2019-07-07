@@ -66,11 +66,25 @@ namespace Isis
 		public string Next(string key)
 		{
 			var text = scenario[key][indexes[key]++].Text;
-			//if(indexes[key] == scenario[key].Count)
+			//if (indexes[key] == scenario[key].Count)
 			//{
 			//	indexes[key] = 0;
 			//}
 			return text;
+		}
+
+		/// <summary>
+		/// 残りの要素数を返します。
+		/// </summary>
+		public int RemainCount
+		{
+			get
+			{
+				var sum = scenario.Select(x => x.Value.Count).Sum();
+				var count = indexes.Select(x => x.Value).Sum();
+
+				return sum - count;
+			}
 		}
 
 		public IEnumerator<(string key, List<ScenarioElement> elements)> GetEnumerator()
