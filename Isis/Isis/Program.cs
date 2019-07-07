@@ -18,7 +18,7 @@ namespace Isis
 		static IEnumerable<string> script;
 		static Scenario scenario;
 
-		static int Main(string[] args)
+		static void Main(string[] args)
 		{
 			FileExistCheck(SettingsFilePath);
 
@@ -29,19 +29,20 @@ namespace Isis
 
 			//置換を行うインスタンスの作成
 			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
-			var output = replacer.Replace(script, scenario, settings.Commands);
+			try
+			{
+				var output = replacer.Replace(script, scenario, settings.Commands);
+				Output(output);
 
-			Output(output);
+				WriteContents(settings.OutputFilePath, output);
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				Console.WriteLine("スクリプト内のシナリオタグの数がシナリオ数よりも多いです。");
+				Exit(ExitCode.OverScenarioTag);
+			}
 
-			WriteContents(settings.OutputFilePath, output);
-
-
-			Console.WriteLine("\n処理を終了しました。");
-			Console.WriteLine("終了するには何かキーを押してください。");
-
-			Console.ReadKey(intercept: true);
-
-			return (int)ExitCode.Success;
+			Exit(ExitCode.Success);
 		}
 
 		static void Initialize()
@@ -123,7 +124,7 @@ namespace Isis
 			}
 		}
 
-		static void Exit(ExitCode exitCode)
+		public static void Exit(ExitCode exitCode)
 		{
 			Console.WriteLine("\n処理を終了しました。");
 			Console.WriteLine("終了するには何かキーを押してください。");
@@ -181,5 +182,6 @@ namespace Isis
 		NotFoundFile,
 		WrongSettingFile,
 		DenyOverwritten,
+		OverScenarioTag,
 	}
 }

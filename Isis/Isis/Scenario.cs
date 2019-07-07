@@ -66,10 +66,10 @@ namespace Isis
 		public string Next(string key)
 		{
 			var text = scenario[key][indexes[key]++].Text;
-			if(indexes[key] == scenario[key].Count)
-			{
-				indexes[key] = 0;
-			}
+			//if(indexes[key] == scenario[key].Count)
+			//{
+			//	indexes[key] = 0;
+			//}
 			return text;
 		}
 
