@@ -53,6 +53,7 @@ namespace Isis
 				}
 
 				string insertTag = insertTagMatch.Groups[tagName].Value;
+				bool findCmd = false;
 				foreach (var cmd in commands)
 				{
 					//コマンドの出力フォーマットにマッチしたら
@@ -63,13 +64,14 @@ namespace Isis
 					{
 						string output = extracter.Replace(line, m => scenario.Next(key));
 						yield return output;
+						findCmd = true;
 						break;
 					}
-					else
-					{
-						ErrorPrint("登録されていないタグが検出されました。");
-						Exit(ExitCode.UnknownTag);
-					}
+				}
+				if (!findCmd)
+				{
+					ErrorPrint("登録されていないタグが検出されました。");
+					Exit(ExitCode.UnknownTag);
 				}
 			}
 		}

@@ -36,6 +36,7 @@ namespace Isis
 				var output = replacer.Replace(script, scenario, settings.Commands)
 					.ToArray();
 
+				//シナリオが全部使われているかチェック
 				var remainCount = scenario.RemainCount;
 				if (remainCount > 0)
 				{

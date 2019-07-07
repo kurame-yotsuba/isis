@@ -11,11 +11,17 @@
   "BeginTag": "{|｛",
   "EndTag": "}|｝",
 
+  //パターンを複数指定したい場合は「|」を間に置きます。
   "CommandPatterns": [
     {
       "Name": "モノローグ",
       "InputPattern": "#|＃",
       "OutputPattern": "#|＃"
+    },
+    {
+      "Name": "コメント",
+      "InputPattern": "@|＠",
+      "OutputPattern": ""
     },
     {
       "Name": "セリフ",
