@@ -9,12 +9,52 @@ namespace Isis
 {
 	class Settings
 	{
+		#region inner class
+
+		/// <summary>
+		/// JSON用の中間形式です。
+		/// </summary>
+		public class CommandPattern
+		{
+			public string Name { get; set; }
+			public string InputPattern { get; set; }
+			public string OutputPattern { get; set; }
+		}
+
+		#endregion
+
+		#region static member
+
+		/// <summary>
+		/// JSON形式からインスタンスを生成します。
+		/// </summary>
+		/// <param name="json"></param>
+		/// <returns></returns>
+		public static Settings Deserialize(string json)
+		{
+			var obj = JsonConvert.DeserializeObject<Settings>(json);
+			return obj;
+		}
+
+		#endregion
+
+		#region instance member
+		#region property
 		public string ScenarioFilePath { get; } = "scenario.txt";
 		public string ScriptFilePath { get; } = "script.txt";
 		public string OutputFilePath { get; } = "output.txt";
+
+		/// <summary>
+		/// スクリプトファイルにおけるシナリオを挿入する箇所を表すタグの開始パターンです。
+		/// </summary>
 		public string BeginTag { get; } = "{";
+
+		/// <summary>
+		/// スクリプトファイルにおけるシナリオを挿入する箇所を表すタグの終了パターンです。
+		/// </summary>
 		public string EndTag { get; } = "}";
 		public Command[] Commands { get; }
+		#endregion
 
 		public Settings(string scenarioFilePath, string scriptFilePath, string outputFilePath,
 			string beginTag, string endTag,
@@ -25,9 +65,16 @@ namespace Isis
 			OutputFilePath = outputFilePath;
 			BeginTag = beginTag;
 			EndTag = endTag;
-			Commands = commandPatterns.Select(x => new Command(x.Name, x.InputPattern, x.OutputPattern)).ToArray();
+
+			Commands = commandPatterns
+				.Select(x => new Command(x.Name, x.InputPattern, x.OutputPattern))
+				.ToArray();
 		}
 
+		/// <summary>
+		/// JSON形式にシリアライズします。
+		/// </summary>
+		/// <returns></returns>
 		public string Serialize()
 		{
 			var obj = new
@@ -37,9 +84,10 @@ namespace Isis
 				OutputFilePath,
 				BeginTag,
 				EndTag,
-				CommandPatterns = Commands.Select(x => new
+				//JSON用の中間形式に変換
+				CommandPatterns = Commands.Select(x => new CommandPattern
 				{
-					x.Name,
+					Name = x.Name,
 					InputPattern = x.InputPattern.ToString(),
 					OutputPattern = x.OutputPattern.ToString(),
 				}),
@@ -49,34 +97,6 @@ namespace Isis
 			return json;
 		}
 
-		public static Settings Deserialize(string json)
-		{
-			var obj = JsonConvert.DeserializeObject<Settings>(json);
-			return obj;
-		}
-
-		//public static Settings Default
-		//{
-		//	get
-		//	{
-		//		var commands = new[]
-		//		{
-		//			new CommandPattern { Name = "monologlue", InputPattern = @"^[#＃](?<text>.*)", OutputPattern = "#" },
-		//			new CommandPattern{ Name = "serif", InputPattern = @"(?<text>.*)", OutputPattern = @"$" },
-		//		};
-
-		//		var result = new Settings(
-		//			"scenario.txt", "script.txt", "output.txt", commands);
-
-		//		return result;
-		//	}
-		//}
-
-		public class CommandPattern
-		{
-			public string Name;
-			public string InputPattern;
-			public string OutputPattern;
-		}
+		#endregion
 	}
 }

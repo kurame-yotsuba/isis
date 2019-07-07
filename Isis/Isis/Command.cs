@@ -30,6 +30,7 @@ namespace Isis
 		public Command(string name, string inputPattern, string outputPattern)
 		{
 			Name = name;
+			//Regex用のオプション
 			var options = RegexOptions.Compiled | RegexOptions.Singleline;
 			InputPattern = new Regex("^" + inputPattern.EscapeExceptOr() + @"(?<text>.*)", options);
 			OutputPattern = new Regex(outputPattern.EscapeExceptOr(), options);

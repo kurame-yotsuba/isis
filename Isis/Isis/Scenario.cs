@@ -8,69 +8,61 @@ using KurameLibrary;
 
 namespace Isis
 {
-	class Scenario : IEnumerable<(string key, List<ScenarioElement> elements)>
+	class Scenario/* : IEnumerable<(string key, List<ScenarioElement> elements)>*/
 	{
-		Dictionary<string, List<ScenarioElement>> scenario;
-		Dictionary<string, int> indexes;
+		#region private member
 
-		public Scenario(IEnumerable<string> contents, Command[] commands)
+		/// <summary>
+		/// シナリオをコマンド名ごとにリストとして保持します。
+		/// </summary>
+		readonly Dictionary<string, List<ScenarioElement>> scenario;
+
+		/// <summary>
+		/// シナリオを取得する際の現在の位置を表します。
+		/// </summary>
+		readonly Dictionary<string, int> indexes;
+
+		void Parse(IEnumerable<string> contents, Command[] commands)
 		{
-
-			scenario = new Dictionary<string, List<ScenarioElement>>();
-			indexes = new Dictionary<string, int>();
-			var cont = kirinuki(contents).ToArray();
-			parse(cont, commands);
-
-			static IEnumerable<string> kirinuki(IEnumerable<string> contents)
+			foreach (var line in contents)
 			{
-				string tmp = "";
-				foreach (var line in contents)
+				foreach (var cmd in commands)
 				{
-					if (line == "")
+					var m = cmd.InputPattern.Match(line);
+					string key = cmd.Name;
+					if (m.Success)
 					{
-						yield return tmp;
-						tmp = "";
-					}
-					else
-					{
-						if(tmp != "")
+						if (!scenario.ContainsKey(key))
 						{
-							tmp += Environment.NewLine;
+							scenario[key] = new List<ScenarioElement>();
+							indexes[key] = 0;
 						}
-						tmp += line;
-					}
-				}
-
-				if (tmp != "")
-				{
-					yield return tmp;
-				}
-			}
-
-			void parse(IEnumerable<string> contents, Command[] commands)
-			{
-				foreach (var line in contents)
-				{
-					foreach (var cmd in commands)
-					{
-						var m = cmd.InputPattern.Match(line);
-						//var outputPat = cmd.OutputPattern.ToString();
-						string key = cmd.Name;
-						if (m.Success)
-						{
-							if (!scenario.ContainsKey(key))
-							{
-								scenario[key] = new List<ScenarioElement>();
-								indexes[key] = 0;
-							}
-							scenario[cmd.Name].Add(new ScenarioElement(cmd, m.Groups["text"].Value));
-							break;
-						}
+						scenario[cmd.Name].Add(new ScenarioElement(cmd, m.Groups["text"].Value));
+						break;
 					}
 				}
 			}
 		}
 
+		#endregion
+
+		#region public member
+
+		public Scenario(IEnumerable<string> contents, Command[] commands)
+		{
+			scenario = new Dictionary<string, List<ScenarioElement>>();
+			indexes = new Dictionary<string, int>();
+			var cont = contents.Split("")
+				.Select(x => x.Aggregate((y, z) => y + Environment.NewLine + z));
+
+			Parse(cont, commands);
+		}
+
+		/// <summary>
+		/// 次の要素を取得します。
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
 		public string Next(string key)
 		{
 			var text = scenario[key][indexes[key]++].Text;
@@ -89,9 +81,6 @@ namespace Isis
 			}
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
+		#endregion
 	}
 }

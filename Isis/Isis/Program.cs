@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,20 +17,34 @@ namespace Isis
 
 		static void Main(string[] args)
 		{
+			//設定ファイルの読み込み
 			var json = File.ReadAllText(SettingsFilePath);
 			var settings = Settings.Deserialize(json);
 
+			//シナリオとスクリプトの読み込み
 			var scenarioText = ReadContents(settings.ScenarioFilePath);
 			var script = ReadContents(settings.ScriptFilePath);
 
-			foreach (var line in script)
-			{
-				Console.WriteLine(line);
-			}
-
-			Console.WriteLine();
-
 			var scenario = new Scenario(scenarioText, settings.Commands);
+
+			//シナリオのコンソールへの出力
+			OutputScenario(scenario);
+
+			//置換を行うインスタンスの作成
+			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
+			var output = replacer.Replace(script, scenario, settings.Commands);
+
+			Output(output);
+
+			WriteContents(settings.OutputFilePath, output);
+		}
+
+		[Conditional("DEBUG")]
+		static void OutputScenario(Scenario scenario)
+		{
+			var line = new string('-', 20);
+			var nl = Environment.NewLine;
+			Console.WriteLine(line + "解析結果" + line + nl);
 
 			foreach (var (key, queue) in scenario)
 			{
@@ -39,16 +54,16 @@ namespace Isis
 				}
 			}
 
-			Console.WriteLine("-------------------");
-			var replacer = new Replacer(settings.BeginTag, settings.EndTag);
-			foreach (var item in replacer.Replace(script, scenario, settings.Commands))
+			Console.WriteLine(nl + line + "--------" + line + Environment.NewLine);
+		}
+
+		[Conditional("DEBUG")]
+		static void Output(IEnumerable<string> contents)
+		{
+			foreach (var item in contents)
 			{
 				Console.WriteLine(item);
 			}
-
-			var output = replacer.Replace(script, scenario, settings.Commands);
-
-			WriteContents(settings.OutputFilePath, output);
 		}
 
 		/// <summary>
@@ -68,6 +83,11 @@ namespace Isis
 			}
 		}
 
+		/// <summary>
+		/// コンテンツファイルを出力します。
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <param name="contents"></param>
 		static void WriteContents(string fileName, IEnumerable<string> contents)
 		{
 			using (var fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
@@ -79,7 +99,5 @@ namespace Isis
 				}
 			}
 		}
-
-		
 	}
 }

@@ -11,9 +11,6 @@
 			Text = text;
 		}
 
-		public override string ToString()
-		{
-			return $"{Command.Name}\t{Text}";
-		}
+		public override string ToString() => $"{Command.Name}\t{Text}";
 	}
 }
